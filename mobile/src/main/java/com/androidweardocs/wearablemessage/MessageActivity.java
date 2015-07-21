@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -21,6 +24,9 @@ public class MessageActivity extends ActionBarActivity
         GoogleApiClient.OnConnectionFailedListener {
 
     GoogleApiClient googleClient;
+    EditText sendtxt;
+    Button sendbtn;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +39,17 @@ public class MessageActivity extends ActionBarActivity
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
+        sendtxt = (EditText) findViewById(R.id.sendtxt);
+
+        sendbtn = (Button) findViewById(R.id.sendbtn);
+        sendbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String message = sendtxt.getText().toString();
+                new SendToDataLayerThread("/message_path", message).start();
+            }
+        });
+
     }
 
     // Connect to the data layer when the Activity starts
@@ -47,7 +64,7 @@ public class MessageActivity extends ActionBarActivity
     public void onConnected(Bundle connectionHint) {
         String message = "Hello wearable\n Via the data layer";
         //Requires a new thread to avoid blocking the UI
-        new SendToDataLayerThread("/message_path", message).start();
+       // new SendToDataLayerThread("/message_path", message).start();
     }
 
     // Disconnect from the data layer when the Activity stops
